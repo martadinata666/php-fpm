@@ -1,4 +1,5 @@
 FROM martadinata666/debian:latest
+ARG TARGETARCH
 # Move to root user, as the base image rootless
 USER root
 # prevent Debian's PHP packages from being installed
@@ -43,6 +44,7 @@ RUN set -eu; \
                 libmemcached11 \
                 imagemagick \
                 libsmbclient \
+                libopenblas0 \
                 tzdata \
                 openssl \
                 binutils \
@@ -110,6 +112,8 @@ RUN set -eux; \
                 intltool \
                 samba-dev \
                 libx11-dev \
+                libopenblas-dev \
+                liblapack-dev \
                 libopenblas-dev \
                 liblapack-dev \
 		zlib1g-dev \
@@ -228,7 +232,16 @@ RUN set -eux; \
     pecl install redis; \
     pecl install smbclient; \
     pecl install imagick; \
-
+# pdlib for face recog
+    git clone --depth=1 https://github.com/davisking/dlib.git /dlib; \ 
+    cd /dlib/dlib; \
+    mkdir build; \
+    cd build; \
+    if [ "${TARGETARCH}" = "amd64" ] ; then \
+       cmake -DBUILD_SHARED_LIBS=ON -DUSE_AVX_INSTRUCTIONS=1 .. ; else cmake -DBUILD_SHARED_LIBS=ON .. ; fi; \
+       make; \
+       make install; \
+       \
 
 # reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
 	apt-mark auto '.*' > /dev/null; \
