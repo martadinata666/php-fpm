@@ -234,7 +234,7 @@ RUN set -eux; \
     pecl install redis; \
     pecl install smbclient; \
     pecl install imagick; \
-# pdlib for face recog
+# dlib deps for pdlib
     git clone --depth=1 https://github.com/davisking/dlib.git /dlib; \ 
     cd /dlib/dlib; \
     mkdir build; \
@@ -243,8 +243,15 @@ RUN set -eux; \
        cmake -DBUILD_SHARED_LIBS=ON -DUSE_AVX_INSTRUCTIONS=1 .. ; else cmake -DBUILD_SHARED_LIBS=ON .. ; fi; \
        make; \
        make install; \
+       cd /;
+       rm -rf /dlib; \
        \
-
+# build pdlib from source
+    git clone --depth=1 https://github.com/goodspb/pdlib.git /usr/src/php/ext/pdlib; \
+    docker-php-ext-configure pdlib; \
+    docker-php-ext-install pdlib; \
+    docker-php-source delete; \
+    \
 # reset apt-mark's "manual" list so that "purge --auto-remove" will remove all build dependencies
 	apt-mark auto '.*' > /dev/null; \
 	[ -z "$savedAptMark" ] || apt-mark manual $savedAptMark; \
