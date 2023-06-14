@@ -243,7 +243,7 @@ RUN set -eux; \
 	rm -rf /tmp/pear ~/.pearrc; \
 	\
 # smoke test
-        docker-php-ext-enable sodium pcu memcached redis smbclient imagick inotify; \
+        docker-php-ext-enable sodium apcu memcached redis smbclient imagick inotify; \
 	php --version; \
         php --modules
 
