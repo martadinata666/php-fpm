@@ -85,6 +85,7 @@ RUN set -eux; \
 	apt-get install -y --no-install-recommends \
 		$PHPIZE_DEPS \
                 git \
+                cmake \
 		libargon2-dev \
 		libcurl4-openssl-dev \
 		libonig-dev \
