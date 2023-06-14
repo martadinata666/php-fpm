@@ -8,7 +8,9 @@ name: Docker Image Build
 on:
   push:
     branches: [ 'master' ] #rolling build on develop only
-    tags: 'v*' #tag for specific release v1.0.2,or anytag, start with v
+  release:
+    types:
+      - 'published'
   pull_request:
     branches: [ 'master' ] #build test on main, not pushing
   workflow_dispatch:
@@ -54,7 +56,7 @@ jobs:
         with:
           context: .
           push: ${{ github.event_name == 'release' }} #push except PR.
-          platforms: linux/amd64
+          platforms: linux/amd64,linux/arm64
           file: Dockerfile.build
           tags: ${{ steps.metaid.outputs.tags }}
           labels: ${{ steps.metaid.outputs.labels }}
